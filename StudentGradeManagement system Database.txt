@@ -1,0 +1,78 @@
+
+create database studentGradeManagementSystem;
+use studentGradeManagementSystem;
+
+CREATE TABLE student (
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone_number VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE subject (
+    subject_id INT PRIMARY KEY AUTO_INCREMENT,
+    subject_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE result_grade (
+    student_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    grade ENUM('A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-') NOT NULL,
+
+    PRIMARY KEY (student_id, subject_id),
+
+    FOREIGN KEY (student_id) REFERENCES student(student_id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subject(subject_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+SELECT 
+    rg.student_id, 
+    s.student_name, 
+    rg.subject_id, 
+    sub.subject_name, 
+    rg.grade
+FROM 
+    result_grade rg
+JOIN 
+    student s ON rg.student_id = s.student_id
+JOIN 
+    subject sub ON rg.subject_id = sub.subject_id
+    
+ALTER TABLE result_grade
+ADD COLUMN marks INT NOT NULL;
+
+select * from result_grade;
+
+SELECT 
+    rg.student_id, 
+    s.student_name, 
+    rg.subject_id, 
+    sub.subject_name, 
+    rg.marks,
+    rg.grade
+FROM 
+    result_grade rg
+JOIN student s ON rg.student_id = s.student_id
+JOIN subject sub ON rg.subject_id = sub.subject_id;
+
+use studentGradeManagementSystem;
+
+CREATE TABLE recorrection (
+    recorrection_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
+    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (student_id) REFERENCES student(student_id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subject(subject_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+
+
